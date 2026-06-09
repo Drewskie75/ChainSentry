@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "ChainSentry",
+  "version": "1.0",
+  "description": "Secure on-chain exception forensics. Automatically analyze runtime crash logs and anchor diagnostic signatures on the blockchain.",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://generativelanguage.googleapis.com/*",
+    "https://rpc.ankr.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.svg"
+  },
+  "icons": {
+    "16": "icon.svg",
+    "48": "icon.svg",
+    "128": "icon.svg"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "chainsentry@yourdomain.com",
+      "strict_min_version": "109.0"
+    }
+  }
+}

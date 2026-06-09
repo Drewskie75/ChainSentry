@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChainSentry - Blockchain Telemetry Audit Dashboard</title>
+  <!-- Google Fonts Outfit & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;600;700&display=swap"
+    rel="stylesheet">
+  <!-- CSS Styles -->
+  <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+  <!-- Cyber Background Grid Overlay -->
+  <div class="cyber-grid"></div>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-area">
+        <div class="logo-glow"></div>
+        <span class="logo-title">ChainSentry</span>
+        <span class="logo-tag">Secure On-Chain Forensics</span>
+      </div>
+      <div class="status-bar">
+        <div class="status-item">
+          <span class="status-indicator online" id="db-status"></span>
+          Extension Vault (Local)
+        </div>
+        <div class="status-item">
+          <span class="status-indicator offline" id="web3-status"></span>
+          Web3 Node (EVM)
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" id="tab-dashboard">Dashboard</button>
+      <button class="tab-btn" id="tab-settings">Configuration</button>
+    </div>
+
+    <!-- Dashboard View Tab Content -->
+    <div id="view-dashboard" class="tab-content active">
+      <!-- Dashboard Core Layout -->
+      <div class="dashboard-grid">
+        <!-- Input Panel -->
+        <section class="card submission-card">
+          <div class="card-header">
+            <div class="header-indicator"></div>
+            <h2>Ingest New Crash Telemetry</h2>
+          </div>
+          <p class="subtitle">Submit runtime exception traces, stack logs, or diagnostic dumps for real-time blockchain
+            anchoring.</p>
+
+          <form id="telemetry-form" class="form-layout">
+            <div class="textarea-container">
+              <textarea id="raw-logs"
+                placeholder="Paste crash dumps or system log outputs here... (e.g. java.lang.NullPointerException)"
+                required></textarea>
+              <div class="textarea-glow"></div>
+            </div>
+            <button type="submit" id="submit-btn" class="btn btn-primary">
+              <span>Analyze & Anchor Telemetry</span>
+              <div class="btn-glow"></div>
+            </button>
+          </form>
+        </section>
+
+        <!-- Terminal Output Panel -->
+        <section class="card console-card">
+          <div class="card-header">
+            <div class="header-indicator cyan"></div>
+            <h2>Smart Forensic Audit Console</h2>
+          </div>
+          <div class="console-body" id="console-output">
+            <div class="console-line text-muted">[SYSTEM] Extension initialized. Ready for telemetry ingestion.</div>
+          </div>
+        </section>
+      </div>
+
+      <!-- History Panel -->
+      <section class="card history-card">
+        <div class="card-header">
+          <div class="header-indicator violet"></div>
+          <h2>Telemetry Incident Vault</h2>
+        </div>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Incident ID</th>
+                <th>Ingest Date</th>
+                <th>Diagnostic Summary</th>
+                <th>Blockchain Tx Hash</th>
+                <th>Forensic Status</th>
+                <th class="actions-header">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="incidents-table-body">
+              <tr>
+                <td colspan="6" class="text-center text-muted">No telemetry records loaded. Submit a log above.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- Configuration Settings View Tab Content -->
+    <div id="view-settings" class="tab-content">
+      <section class="card settings-card">
+        <div class="card-header">
+          <div class="header-indicator violet"></div>
+          <h2>Extension Configuration</h2>
+        </div>
+        <p class="subtitle">Customize diagnostic models and smart contract anchoring parameters. If left unconfigured, the extension uses secure local rule-based diagnostics and simulated anchoring.</p>
+        
+        <form id="settings-form" class="form-layout">
+          <!-- Gemini API Key -->
+          <div class="form-group">
+            <label for="setting-gemini-key">Cloud Diagnostic API Key</label>
+            <input type="password" id="setting-gemini-key" placeholder="Enter your Gemini/Cloud API key (optional)">
+            <p class="field-hint">Enables deep cloud-based diagnostic models. Leave blank to run offline analyzer rules.</p>
+          </div>
+
+          <!-- Web3 RPC URL -->
+          <div class="form-group">
+            <label for="setting-rpc-url">Web3 RPC Node URL</label>
+            <input type="url" id="setting-rpc-url" placeholder="https://rpc.ankr.com/eth_sepolia (optional)">
+            <p class="field-hint">Specify an EVM network JSON-RPC endpoint.</p>
+          </div>
+
+          <!-- Wallet Private Key -->
+          <div class="form-group">
+            <label for="setting-private-key">Wallet Private Key</label>
+            <input type="password" id="setting-private-key" placeholder="0x... (optional)">
+            <p class="field-hint">Used to sign on-chain anchoring transactions. Keep this key secure and local.</p>
+          </div>
+
+          <!-- Contract Address -->
+          <div class="form-group">
+            <label for="setting-contract-addr">Smart Contract Address</label>
+            <input type="text" id="setting-contract-addr" placeholder="0x... (optional)">
+            <p class="field-hint">The deployed ChainSentry contract address on the network.</p>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="save-settings-btn">
+              <span>Save Configurations</span>
+              <div class="btn-glow"></div>
+            </button>
+            <button type="button" class="btn btn-outline-cyan" id="reset-settings-btn">Reset Defaults</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <!-- Verification Overlay Modal -->
+  <div class="modal-overlay" id="audit-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-title-glow"></span>
+          <h3>Audit Verification Report</h3>
+        </div>
+        <button class="close-btn" id="close-modal-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="audit-step">
+          <div class="audit-icon" id="audit-icon-db">✓</div>
+          <div class="audit-info">
+            <h4>Recomputing Local Telemetry Fingerprint</h4>
+            <p class="crypto-hash" id="local-hash-display">Calculating SHA-256...</p>
+          </div>
+        </div>
+        <div class="audit-step">
+          <div class="audit-icon" id="audit-icon-chain">✓</div>
+          <div class="audit-info">
+            <h4>Querying Blockchain Ledger Record</h4>
+            <p class="crypto-hash" id="chain-hash-display">Fetching anchored hash...</p>
+          </div>
+        </div>
+
+        <hr class="modal-divider">
+
+        <div class="audit-result-banner" id="audit-result">
+          <div class="result-status-title" id="result-title">Verifying...</div>
+          <p id="result-message">Fetching on-chain metadata.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Javascript Logic Dependencies -->
+  <script src="ethers.umd.min.js"></script>
+  <!-- Main Logic -->
+  <script src="popup.js"></script>
+</body>
+
+</html>
